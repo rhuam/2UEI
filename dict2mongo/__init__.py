@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 from datetime import datetime
 import csv
 import geocode
-import pprint
+import xml.etree.ElementTree as ET
 
 
 class dict2mongo(object):
@@ -36,6 +36,7 @@ class dict2mongo(object):
                 cd['descricao'] = r[5]
                 print(cd)
                 self.__collection.insert_one(cd)
+                self.__db.close()
 
 
     def eventosContext(self, filePath):
@@ -57,6 +58,7 @@ class dict2mongo(object):
                 cd['descricao'] = r[4]
                 print(cd)
                 self.__collection.insert_one(cd)
+                self.__db.close()
 
     def jogoContext(self, filePath):
         cd = {}
@@ -68,15 +70,17 @@ class dict2mongo(object):
             for r in reader:
                 cd['_id'] = ObjectId()
                 cd['context_type'] = 'jogo'
-                cd['tipo_jogo'] = r[4]
-                g = geo.OSM_address2coordinates(r[3])
+                cd['tipo_jogo'] = r[6]
+                g = geo.OSM_address2coordinates(r[5])
                 cd['localizacao'] = {'address': g[0]['address'],
                                      'coordinates': g[0]['coordinates'],
                                      'type': g[0]['type']}
                 cd['date'] = datetime.strptime(r[0] + ' ' + r[1], '%d/%m/%y %H:%M:%S')
-                cd['descricao'] = r[2]
+                cd['date_end'] = datetime.strptime(r[2] + ' ' + r[3], '%d/%m/%y %H:%M:%S')
+                cd['descricao'] = r[4]
                 print(cd)
                 self.__collection.insert_one(cd)
+                self.__db.close()
 
     def climaContext(self, filePath, city='Porto Alegre'):
         cd = {}
@@ -98,6 +102,7 @@ class dict2mongo(object):
                                      'type': g[0]['type']}
                 print(cd)
                 self.__collection.insert_one(cd)
+                self.__db.close()
 
     def tweetContext(self, json):
         geo = geocode.GeoCode()
@@ -140,15 +145,92 @@ class dict2mongo(object):
             i += 1
             print('--------------------------------------------')
             self.__collection.insert_one(d['_source'])
+            self.__db.close()
 
     def simpleQuery(self, typeCoordinates='Point', coordinates=[-51.21333, -30.03459], limit=10,
                     startDate=datetime(2018, 6, 15, 0, 1, 6, 764), endDate=datetime(2018, 6, 15, 23, 55, 3, 381)):
+
+        listDoc = []
+
+        print(typeCoordinates, coordinates, limit, startDate, endDate)
+
         cursor = self.__collection.aggregate([{'$geoNear': {
             'near': {'type': typeCoordinates, 'coordinates': coordinates}, 'spherical': True,
             'distanceField': 'distance', 'limit': limit, 'query': {'date': {'$gte': startDate, '$lt': endDate}}}}])
 
         for c in cursor:
-            print("-------------------------------------------------")
-            pprint.pprint(c)
+            listDoc.append(c)
 
-        self.__db.close()
+        return listDoc
+
+
+    def testQuery(self, typeCoordinates, coordinates, limit, startDate,endDate):
+
+        listDoc = []
+
+        # print(typeCoordinates, coordinates, limit, startDate, endDate)
+
+        # cursor = self.__collection.find({
+        #     'localizacao':{
+        #         '$nearSphere': {
+        #             '$geometry':{
+        #                 'type': typeCoordinates,
+        #                 'coordinates': coordinates,
+        #                 '$maxDistance': 10
+        #             },
+        #
+        #         }
+        #     }
+        # })
+
+
+        query = {
+            'Point',
+            'MultiPoint',
+            'LineString',
+            'MultiLineString',
+            'Polygon',
+            'MultiPolygon',
+            'GeometryCollection'
+        }
+
+
+        cursor = self.__collection.find({
+            'localizacao':{
+                '$geoWithin': {
+                    '$geometry':{
+                        'type': typeCoordinates,
+                        'coordinates': coordinates,
+                        '$maxDistance': 10
+                    }
+
+                }
+            }
+        })
+
+        # cursor = self.__collection.aggregate([{'$geoNear': {
+        #     'near': {'type': typeCoordinates, 'coordinates': coordinates}, 'spherical': True,
+        #     'distanceField': 'distance', 'limit': limit, 'query': {'date': {'$gte': startDate, '$lt': endDate}}}}])
+
+        for c in cursor:
+            listDoc.append(c)
+
+        return listDoc
+
+
+
+    def traffic_signals(self, xmlOSM):
+        tree = ET.parse(xmlOSM)
+        root = tree.getroot()
+
+        cd = {}
+
+        for child in root:
+            if (child.tag == 'node'):
+                for tag in child:
+                    if (tag.attrib['v'] == 'traffic_signals'):
+                        cd['_id'] = ObjectId()
+                        cd['localizacao'] = {'coordinates': [float(child.attrib['lat']), float(child.attrib['lon'])],
+                                             'type': 'Point'}
+                        # print('#', cd)
+                        self.__collection.insert_one(cd)

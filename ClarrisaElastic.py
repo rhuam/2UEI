@@ -1,8 +1,10 @@
 # !/usr/bin/env python
 # coding=UTF-8
+import numpy as np
 from elasticsearch import Elasticsearch
 import json
-
+from datetime import datetime
+import timedelta
 
 # Process hits here
 def process_hits(hits):
@@ -32,7 +34,7 @@ doc = {
                     }
                 }],
             "should": [
-                {"range": {"date": {"from": "2018-06-10 00:00:00", "to": "2018-06-18 00:00:00"}}}
+                {"range": {"date": {"from": "2017-01-01 00:00:00", "to": "2018-01-25 00:00:00"}}}
             ]
         }
     }
@@ -46,17 +48,58 @@ scroll_size = len(data['hits']['hits'])
 # Before scroll, process current batch of hits
 # process_hits(data['hits']['hits'])
 
-print(data['hits']['hits'][1]['_source'])
+
+pos = np.zeros(32, dtype=int)
+neg = np.zeros(32, dtype=int)
+neu = np.zeros(32, dtype=int)
+
+
+
 
 while scroll_size > 0:
     "Scrolling..."
     data = es.scroll(scroll_id=sid, scroll='2m')
 
     # Process current batch of hits
-    print(data['hits']['hits'][0]['_source'])
+    # print("# ", data['hits']['hits'][0]['_source'])
 
-    # Update the scroll ID
-    sid = data['_scroll_id']
+    # print(data)
+    if len(data['hits']['hits']) > 0:
+        dataDict = data['hits']['hits'][0]['_source']
+        date = datetime.strptime(dataDict['date'], '%Y-%m-%d %H:%M:%S')
 
-    # Get the number of results that returned in the last scroll
+        # print("##", date.day)
+
+
+        if dataDict['polarity'] == 'pos':
+            pos[date.day] += 1
+        elif dataDict['polarity'] == 'neg':
+            neg[date.day] += 1
+        else:
+            neu[date.day] += 1
+        # lista2.append(data['hits']['hits'][0]['_source'])
+
+        # Update the scroll ID
+        sid = data['_scroll_id']
+
+        # Get the number of results that returned in the last scroll
     scroll_size = len(data['hits']['hits'])
+
+
+print("pos:", pos)
+print("neg:", neg)
+print("neu:", neu)
+
+soma = []
+
+for i in range(32):
+    soma[i] = pos[i] + neg[i] + neu[i]
+    pos[i] = pos[i]/soma[i]
+    neg[i] = neg[i]/soma[i]
+    neu[i] = neu[i]/soma[i]
+
+
+print("soma", soma)
+print("pos:", pos)
+print("neg:", neg)
+print("neu:", neu)
