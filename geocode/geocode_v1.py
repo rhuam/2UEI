@@ -13,6 +13,11 @@ class GeoCode(object):
         self.OSM_GEOCODE_API_URL = 'https://nominatim.openstreetmap.org/search'
         self.OSM_GEOCODE_REVERSE_API_URL = ' https://nominatim.openstreetmap.org/reverse'
 
+
+
+
+    
+
     def OSM_address2coordinates(self, query='', street=False, city='Porto Alegre', state='RS', country='BR',
                                postalcode=False):
 
@@ -21,7 +26,7 @@ class GeoCode(object):
             'accept-language': 'br',
             'polygon_geojson': 1,
             'limit': 3,
-            'q': query
+            'q': query,
         }
 
         if street: params['q'] += ', ' + str(street)
@@ -255,3 +260,75 @@ class GeoCode(object):
     #
     #     return req.url
 
+# def OSM_address2coordinates(self, addressQuery, city=None, state=None, region='br'):
+#
+#     query = addressQuery
+#     query += (', ' + str(city) if city else '')
+#     query += (', ' + str(state) if state else '')
+#
+#
+#     params = {'format': 'jsonv2',
+#               'accept-language': region,
+#               'polygon_geojson': 1,
+#               'limit': 3,
+#               'dedupe': 1,
+#               'q': query
+#     }
+#
+#     req = requests.get(self.OSM_GEOCODE_API_URL, params=params)
+#     res = req.json()
+#
+#
+#     ## VERIFICAR
+#     if not (type(res) is list):
+#         res = [res]
+#
+#     # listGeodata = []
+#     #
+#     # for r in res:
+#     #     geodata = dict()
+#     #     geodata['address'] = r['display_name']
+#     #     geodata['type'] = r['geojson']['type']
+#     #     geodata['coordinates'] = r['geojson']['coordinates']
+#     #
+#     #     listGeodata.append(geodata)
+#     #
+#     # return listGeodata
+#
+#     print("********** OSM **********")
+#     pprint.pprint(res)
+
+# def GMAPS_address2coordinates(self, addressQuery, city=None, state=None, region='br'):
+#
+#     query = addressQuery
+#     query += (', ' + str(city) if city else '')
+#     query += (', ' + str(state) if state else '')
+#
+#     params = {
+#         'address': query,
+#         'region': region,
+#         'key': self.G_MAPS_KEY
+#     }
+#
+#     req = requests.get(self.G_MAPS_GEOCODE_API_URL, params=params)
+#     res = req.json()
+#
+#
+#     # listGeodata = []
+#     #
+#     # if (res['status'] == 'OK'):
+#     #     for result in res['results']:
+#     #         geodata = dict()
+#     #         geodata['lat'] = result['geometry']['location']['lat']
+#     #         geodata['lng'] = result['geometry']['location']['lng']
+#     #         geodata['latlng'] = str(geodata['lat']) + ',' + str(geodata['lng'])
+#     #         geodata['vlatlng'] = [geodata['lat'], geodata['lng']]
+#     #         geodata['address'] = result['formatted_address']
+#     #         listGeodata.append(geodata)
+#     #
+#     # return listGeodata
+#
+#
+#     print("********** GMAPS **********")
+#     pprint.pprint(res)
+#
