@@ -1,0 +1,144 @@
+count    7528.000000
+mean        4.935043
+std         0.875939
+min         1.000000
+25%         5.000000
+50%         5.000000
+75%         5.000000
+max         6.000000
+Name: day_of_week, dtype: float64
+count    7528.000000
+mean        0.004251
+std         0.065064
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         0.000000
+max         1.000000
+Name: evento, dtype: float64
+count    7528.000000
+mean      249.719713
+std        63.206727
+min       112.000000
+25%       188.000000
+50%       269.000000
+75%       302.000000
+max       444.000000
+Name: grid_h, dtype: float64
+count    7528.000000
+mean      310.523778
+std        75.182002
+min        77.000000
+25%       314.750000
+50%       339.000000
+75%       358.000000
+max       387.000000
+Name: grid_w, dtype: float64
+count    7528.000000
+mean        0.062566
+std         0.242198
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         0.000000
+max         1.000000
+Name: holiday, dtype: float64
+count    7528.0
+mean        0.0
+std         0.0
+min         0.0
+25%         0.0
+50%         0.0
+75%         0.0
+max         0.0
+Name: holiday_eve, dtype: float64
+count    7528.000000
+mean       15.129915
+std         2.444629
+min         7.000000
+25%        14.000000
+50%        17.000000
+75%        17.000000
+max        19.000000
+Name: hour, dtype: float64
+count    7528.0
+mean        0.0
+std         0.0
+min         0.0
+25%         0.0
+50%         0.0
+75%         0.0
+max         0.0
+Name: manifestacoes, dtype: float64
+count    7528.0
+mean        0.0
+std         0.0
+min         0.0
+25%         0.0
+50%         0.0
+75%         0.0
+max         0.0
+Name: obras, dtype: float64
+count    7528.000000
+mean        0.007040
+std         0.083617
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         0.000000
+max         1.000000
+Name: cClima, dtype: float64
+count    7528.000000
+mean        0.020855
+std         0.142910
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         0.000000
+max         1.000000
+Name: cIncidentes, dtype: float64
+count    7528.000000
+mean        0.654490
+std         0.475566
+min         0.000000
+25%         0.000000
+50%         1.000000
+75%         1.000000
+max         1.000000
+Name: cObstrução, dtype: float64
+count    7528.000000
+mean        0.298220
+std         0.457507
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         1.000000
+max         1.000000
+Name: cOutros, dtype: float64
+count    7528.000000
+mean        0.003055
+std         0.055194
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         0.000000
+max         1.000000
+Name: cSemáforo, dtype: float64
+count    7528.000000
+mean        0.009830
+std         0.098664
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         0.000000
+max         1.000000
+Name: cTráfego_Livre, dtype: float64
+count    7528.000000
+mean        0.020058
+std         0.140210
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         0.000000
+max         1.000000
+Name: cTráfego_Pesado, dtype: float64
